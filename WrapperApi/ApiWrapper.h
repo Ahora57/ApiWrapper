@@ -24,7 +24,7 @@ namespace ApiWrapper
         // i don't shure ,what it's work  
          
         STRING stringInit{ 0 };
-        stringInit.Length = sizeof(string_to_init) - sizeof(char);
+        stringInit.Length = NoCRT::string::strlen(string_to_init);
         stringInit.MaximumLength = stringInit.Length + 2;
         stringInit.Buffer = (char*)string_to_init;
         return stringInit;
