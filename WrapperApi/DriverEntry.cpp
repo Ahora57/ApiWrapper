@@ -16,21 +16,29 @@ NTSTATUS DriverEntry(IN PDRIVER_OBJECT pDriverObject, IN PUNICODE_STRING pRegist
 	auto dayWrapper = ApiWrapper::InitUnicodeString(L"Test day");
 	UNICODE_STRING dayGood;
 	RtlInitUnicodeString(&dayGood, L"Test day");
-	Log("buffer no wrapper ->\t 0x%p\n", dayGood.Buffer);
-	Log("buffer wrapper ->\t 0x%p\n", dayWrapper.Buffer);
+	Log("buffer no wrapper ->\t 0x%p", dayGood.Buffer);
+	Log("buffer wrapper ->\t 0x%p", dayWrapper.Buffer);
 
-	Log("lenght no wrapper ->\t 0x%p\n", dayGood.Length);
-	Log("lenght wrapper ->\t 0x%p\n", dayWrapper.Length);
+	Log("lenght no wrapper ->\t 0x%p", dayGood.Length);
+	Log("lenght wrapper ->\t 0x%p", dayWrapper.Length);
  
-	Log("Max lenght no wrapper ->\t 0x%p\n", dayGood.MaximumLength);
-	Log("Max lenght wrapper ->\t 0x%p\n", dayWrapper.MaximumLength);
+	Log("Max lenght no wrapper ->\t 0x%p", dayGood.MaximumLength);
+	Log("Max lenght wrapper ->\t 0x%p", dayWrapper.MaximumLength);
 	
-	Log("Windows number ->\t 0x%u", ApiWrapper::GetWindowsNumber());
+	Log("Windows number ->\t %u", ApiWrapper::GetWindowsNumber());
 
-	Log("Windows build number ->\t 0x%u", ApiWrapper::GetNumberBuild());
+	Log("Windows build number ->\t %u", ApiWrapper::GetNumberBuild());
+
+	Log("Random number ->\t %u", ApiWrapper::RandomNumber()); 
+
+	Log("Random number ->\t %u", ApiWrapper::RandomNumber()); 
+
+	Log("Random number ->\t %u", ApiWrapper::RandomNumber());
+
 
 	ApiWrapper::KeMessageBox(L"Test", L"Good day", MB_OK);
-
    
 	return STATUS_SUCCESS;
+
+    
 }
