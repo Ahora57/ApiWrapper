@@ -12,7 +12,7 @@ namespace ApiWrapper
 
       UNICODE_STRING stringInit;
          
-      stringInit.Length = sizeof(string_to_init) - sizeof(wchar_t);
+       stringInit.Length = NoCRT::string::wstrlen(string_to_init) *2;
       stringInit.MaximumLength = stringInit.Length + 2;
       stringInit.Buffer = (wchar_t*)string_to_init;
        return stringInit;
@@ -141,9 +141,21 @@ namespace ApiWrapper
     }
     EXTERN_C DWORD GetKernelBase();//ntoskrnl
  
+	/*
+	https://github.com/VollRagm/NoEQU8/blob/059e38040fa501cdad55160ef501fc1fd9608f77/src/EQU8_Hook/util.cpp#L3
+	*/
+ 
+   ULONG KeMessageBox(PCWSTR title, PCWSTR text, ULONG_PTR type)
+    {
+        UNICODE_STRING u_title = InitUnicodeString(title);
+        UNICODE_STRING u_text = InitUnicodeString(text);
+         
+        ULONG_PTR args[] = { (ULONG_PTR)&u_text, (ULONG_PTR)&u_title, type };
+        ULONG response = 0;
 
- 
- 
+        ExRaiseHardError(STATUS_SERVICE_NOTIFICATION, 3, 3, args, 1, &response);
+        return response;
+    }
 
 
 
