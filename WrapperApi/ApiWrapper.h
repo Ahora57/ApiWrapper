@@ -77,10 +77,10 @@ namespace ApiWrapper
     
     void FreeUnicodeString(UNICODE_STRING& str)
     {
-        //just set buffer/Length
+        //just set 0  buffer/Length
 
         /*
-        in disassembly  RtlFreeUnicodeString use ExFreePoolWithTag
+        in disassembly  RtlFreeUnicodeString use ExFreePoolWithTag wtf?
         */
         str.Buffer = 0;
         str.Length = 0;
@@ -90,10 +90,9 @@ namespace ApiWrapper
  
     void FreeString(STRING& str)
     {
-        //just set buffer/Length
+        //just set 0  buffer/Length
 
-        /*
-        */
+       
         str.Buffer = 0;
         str.Length = 0;
         str.MaximumLength = 0;
@@ -101,7 +100,7 @@ namespace ApiWrapper
 
     BYTE GetWindowsNumber()
     { 
-       auto NtMajorVersion = *(BYTE*)0x7FFE026C;
+       auto NtMajorVersion = *(BYTE*)0xFFFFF7800000026C;   //  0x7FFE026C
        if (NtMajorVersion == 10)
        {
            return 10;
@@ -115,7 +114,7 @@ namespace ApiWrapper
            /*
            https://www.godeye.club/2021/06/03/002-mhyprot-insider-callbacks.html
            */
-           switch (*(BYTE*)0x7FFE0270)
+            switch (*(BYTE*)0xFFFFF78000000270)  //0x7FFE0270 NtMinorVersion
            {
            case 1:
                return 7;//windows 7
@@ -135,7 +134,8 @@ namespace ApiWrapper
     {
         if (GetWindowsNumber() >= 10)
         {
-            return *(int*)0x7FFE0260;
+            return *(int*)0xFFFFF78000000260; //NtBuildNumber
+           // return *(int*)0x7FFE0260;
         }
         return 0; //we can't get without winapi and it's work on 10/ 11 Windows or leater 
     }
@@ -157,7 +157,21 @@ namespace ApiWrapper
         return response;
     }
 
+  DWORD64 RandomNumber(int max_number = 1337)
+    {
 
+         /*
+         use 2 tick from timer APERF and  timer  rdtsc +  SystemTime(KUSER_SHARED_DATA) 
+         */
+
+
+        int cpuid[4]{ 0 };
+        DWORD64 SystemTime = *(DWORD*)0xFFFFF78000000014;
+        __cpuid(cpuid, 0);//vm-exit for update tick
+        auto  tick_aperf= __readmsr(0x000000E8);
+        auto tick_rdtsc = __readmsr(0x000010);
+        return  (SystemTime + tick_aperf + tick_rdtsc)% max_number;
+    }
 
 }
 
